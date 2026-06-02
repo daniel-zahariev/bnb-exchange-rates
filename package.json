@@ -1,8 +1,23 @@
 {
-  "name": "bnb-exchange-rates",
-  "type": "module",
+  "name": "@bg-apis/bnb-exchange-rates",
   "version": "0.1.0",
   "description": "Fetch exchange rates from the Bulgarian National Bank (BNB) and parse them into a structured format.",
+  "keywords": [
+    "BNB",
+    "FX",
+    "exchange rates"
+  ],
+  "homepage": "https://github.com/danielzahariev/bnb-exchange-rates#readme",
+  "bugs": {
+    "url": "https://github.com/danielzahariev/bnb-exchange-rates/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielzahariev/bnb-exchange-rates.git"
+  },
+  "license": "MIT",
+  "author": "Daniel Zahariev <daniel.zahariev@gmail.com>",
+  "type": "module",
   "main": "./dist/bnb.cjs",
   "module": "./dist/bnb.js",
   "types": "./dist/bnb.d.cts",
@@ -13,17 +28,13 @@
     },
     "./package.json": "./package.json"
   },
+  "directories": {
+    "test": "tests"
+  },
   "files": [
     "dist",
     "package.json"
   ],
-  "keywords": [
-    "BNB",
-    "FX",
-    "exchange rates"
-  ],
-  "author": "Daniel Zahariev <daniel.zahariev@gmail.com>",
-  "license": "MIT",
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
@@ -43,5 +54,8 @@
     "tsdown": "^0.22.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
