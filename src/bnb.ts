@@ -58,7 +58,7 @@ export const printBnbExchangeRate = (
 
 const transformBnbXmlRow = (row: BnbXmlRow): BnbExchangeRate => {
 	const d = row.CURR_DATE.split(".").reverse();
-	if (Number.parseInt(d[0] ?? "0") >= 2026) {
+	if (Number.parseInt(d[0] ?? "0", 10) >= 2026) {
 		return {
 			base: "EUR",
 			rate: row.RATE,
@@ -76,7 +76,7 @@ const transformBnbXmlRow = (row: BnbXmlRow): BnbExchangeRate => {
 	};
 };
 
-const supportedCurrencies = [
+export const bnbSupportedCurrencies = [
 	"USD",
 	"JPY",
 	"CZK",
@@ -146,11 +146,13 @@ export const parseBnbExchangeRates = (xml: string): BnbExchangeRate[] => {
  * Fetches exchange rates for a specific day from the BNB website. If no date is provided, it fetches the rates for the current day.
  *
  * @param Date day The date for which to fetch exchange rates. If not provided, defaults to the current day.
+ * @param AbortSignal signal An optional abort signal to cancel the request.
  * @returns An array of exchange rates for the specified day, or the current day if no date is provided
  * @throws Error when the specified day is a weekend, as BNB does not publish exchange rates on weekends
  */
 export const getDayExchangeRates = async (
 	day?: Date,
+	signal?: AbortSignal,
 ): Promise<BnbExchangeRate[]> => {
 	const d = day ?? new Date();
 
@@ -169,10 +171,10 @@ export const getDayExchangeRates = async (
 
 	const url = new URL(BNB_BASE_URL);
 	url.search = params.toString();
-	console.log("Fetching BNB exchange rates from URL:", url.toString());
 
 	const res = await fetch(url, {
 		headers: { "User-Agent": "curl/0.1.0" },
+		signal: signal ?? null,
 	});
 	if (!res.ok) {
 		throw new Error(`BNB request failed: ${res.status}`);
@@ -186,13 +188,15 @@ export const getDayExchangeRates = async (
  * Fetches exchange rates for a specific month from the BNB website.
  *
  * @param date The date for which to fetch exchange rates. Only the month and year are used; the day is ignored. If not provided, defaults to the current month.
+ * @param AbortSignal signal An optional abort signal to cancel the request.
  * @param currencies Defaults to all supported currencies. If provided, only fetches exchange rates for the specified currencies.
  * @returns An array of exchange rates for the specified month
  * @throws Error when the specified date is a weekend, as BNB does not publish exchange rates on weekends
  */
 export const getMonthExchangeRates = async (
 	date: Date,
-	currencies = supportedCurrencies,
+	signal?: AbortSignal,
+	currencies = bnbSupportedCurrencies,
 ): Promise<BnbExchangeRate[]> => {
 	const [y, m] = [
 		String(date.getFullYear()),
@@ -217,10 +221,10 @@ export const getMonthExchangeRates = async (
 
 	const url = new URL(BNB_BASE_URL);
 	url.search = params.toString();
-	console.log("Fetching BNB exchange rates from URL:", url.toString());
 
 	const res = await fetch(url.toString(), {
 		headers: { "User-Agent": "curl/0.1.0" },
+		signal: signal ?? null,
 	});
 	if (!res.ok) {
 		throw new Error(`BNB request failed: ${res.status}`);

@@ -1,19 +1,19 @@
 {
   "name": "@bg-apis/bnb-exchange-rates",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Fetch exchange rates from the Bulgarian National Bank (BNB) and parse them into a structured format.",
   "keywords": [
     "BNB",
     "FX",
     "exchange rates"
   ],
-  "homepage": "https://github.com/danielzahariev/bnb-exchange-rates#readme",
+  "homepage": "https://github.com/daniel-zahariev/bnb-exchange-rates#readme",
   "bugs": {
-    "url": "https://github.com/danielzahariev/bnb-exchange-rates/issues"
+    "url": "https://github.com/daniel-zahariev/bnb-exchange-rates/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/danielzahariev/bnb-exchange-rates.git"
+    "url": "git+https://github.com/daniel-zahariev/bnb-exchange-rates.git"
   },
   "license": "MIT",
   "author": "Daniel Zahariev <daniel.zahariev@gmail.com>",
@@ -21,6 +21,7 @@
   "main": "./dist/bnb.cjs",
   "module": "./dist/bnb.js",
   "types": "./dist/bnb.d.cts",
+  "sideEffects": false,
   "exports": {
     ".": {
       "import": "./dist/bnb.js",
@@ -42,9 +43,6 @@
     "lint": "biome check . && tsc --noEmit",
     "format": "biome check . --write"
   },
-  "dependencies": {
-    "@nodable/flexible-xml-parser": "^1.2.1"
-  },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.3",
     "@biomejs/biome": "^2.4.16",
@@ -57,5 +55,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@nodable/flexible-xml-parser": "^1.2.1"
   }
 }
