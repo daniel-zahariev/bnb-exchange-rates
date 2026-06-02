@@ -1,0 +1,47 @@
+{
+  "name": "bnb-exchange-rates",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Fetch exchange rates from the Bulgarian National Bank (BNB) and parse them into a structured format.",
+  "main": "./dist/bnb.cjs",
+  "module": "./dist/bnb.js",
+  "types": "./dist/bnb.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/bnb.js",
+      "require": "./dist/bnb.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "keywords": [
+    "BNB",
+    "FX",
+    "exchange rates"
+  ],
+  "author": "Daniel Zahariev <daniel.zahariev@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest --run tests/*.test.ts",
+    "lint": "biome check . && tsc --noEmit",
+    "format": "biome check . --write"
+  },
+  "dependencies": {
+    "@nodable/flexible-xml-parser": "^1.2.1"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/core": "^0.18.3",
+    "@biomejs/biome": "^2.4.16",
+    "@types/node": "^24.0.0",
+    "biome": "^0.3.3",
+    "publint": "^0.3.21",
+    "tsdown": "^0.22.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}
