@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
 	type BnbExchangeRate,
+	getDayExchangeRates,
 	parseBnbExchangeRates,
 	printBnbExchangeRate,
 } from "../src/bnb.js";
@@ -30,8 +31,8 @@ describe("BNB Exchange Rates", () => {
  </ROW>
  </ROWSET>`;
 
-		const rates = await parseBnbExchangeRates(xml);
-		expect(rates).toMatchInlineSnapshot(`
+		const result = await parseBnbExchangeRates(xml);
+		expect(result.rates).toMatchInlineSnapshot(`
 			[
 			  {
 			    "base": "EUR",
@@ -56,17 +57,30 @@ describe("BNB Exchange Rates", () => {
 			]
 		`);
 
-		expect(printBnbExchangeRate(rates[0] as BnbExchangeRate, "base")).toBe(
-			"1 EUR = 5.8515 BRL [2026-06-01]",
-		);
-		expect(printBnbExchangeRate(rates[0] as BnbExchangeRate, "target")).toBe(
-			"1 BRL = 0.1709 EUR [2026-06-01]",
-		);
-		expect(printBnbExchangeRate(rates[1] as BnbExchangeRate, "base")).toBe(
-			"1 BGN = 3.19031 BRL [2025-01-10]",
-		);
-		expect(printBnbExchangeRate(rates[1] as BnbExchangeRate, "target")).toBe(
-			"10 BRL = 3.13449 BGN [2025-01-10]",
-		);
+		expect(
+			printBnbExchangeRate(result.rates[0] as BnbExchangeRate, "base"),
+		).toBe("1 EUR = 5.8515 BRL [2026-06-01]");
+		expect(
+			printBnbExchangeRate(result.rates[0] as BnbExchangeRate, "target"),
+		).toBe("1 BRL = 0.1709 EUR [2026-06-01]");
+		expect(
+			printBnbExchangeRate(result.rates[1] as BnbExchangeRate, "base"),
+		).toBe("1 BGN = 3.19031 BRL [2025-01-10]");
+		expect(
+			printBnbExchangeRate(result.rates[1] as BnbExchangeRate, "target"),
+		).toBe("10 BRL = 3.13449 BGN [2025-01-10]");
+	});
+
+	it("should return an error when the XML is invalid", async () => {
+		const { rates, error } = parseBnbExchangeRates("invalid XML");
+		expect(rates).toHaveLength(0);
+		expect(error).toBe("INVALID_BNB_XML");
+	});
+
+	it("should return an error when BNB hasn't published rates for the given date", async () => {
+		const tomorrow = new Date(Date.now() + 86400000);
+		const { rates, error } = await getDayExchangeRates(tomorrow);
+		expect(rates).toHaveLength(0);
+		expect(error).toBe("INVALID_BNB_XML");
 	});
 });

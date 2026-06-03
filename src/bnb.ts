@@ -125,21 +125,25 @@ const normalizeXmlRows = (row: unknown): unknown[] => {
 	return Array.isArray(row) ? row : [row];
 };
 
-export const parseBnbExchangeRates = (xml: string): BnbExchangeRate[] => {
+export const parseBnbExchangeRates = (
+	xml: string,
+): { rates: BnbExchangeRate[]; error: string | false } => {
 	if (!xml.includes("<ROWSET>")) {
-		throw new Error("INVALID_BNB_XML");
+		return { rates: [], error: "INVALID_BNB_XML" };
 	}
 
 	const parser = new XMLParser();
 	const result = parser.parse(xml);
 	const rows = normalizeXmlRows(result.ROWSET?.ROW);
 	if (rows.length === 0) {
-		throw new Error("INVALID_BNB_XML");
+		return { rates: [], error: "INVALID_BNB_XML" };
 	}
 
-	return rows
+	const rates = rows
 		.filter((r) => isObject(r) && validateBnbXmlRow(r))
 		.map((r) => transformBnbXmlRow(r));
+
+	return { rates, error: false };
 };
 
 /**
@@ -153,7 +157,7 @@ export const parseBnbExchangeRates = (xml: string): BnbExchangeRate[] => {
 export const getDayExchangeRates = async (
 	day?: Date,
 	signal?: AbortSignal,
-): Promise<BnbExchangeRate[]> => {
+): Promise<{ rates: BnbExchangeRate[]; error: string | false }> => {
 	const d = day ?? new Date();
 
 	if (d.getDay() === 0 || d.getDay() === 6) {
@@ -181,7 +185,12 @@ export const getDayExchangeRates = async (
 	}
 	const text = await res.text();
 
-	return parseBnbExchangeRates(text);
+	const rates = parseBnbExchangeRates(text);
+	const expectedDate = d.toISOString().split("T")[0];
+	return {
+		rates: rates.rates.filter((r) => r.date === expectedDate),
+		error: rates.error,
+	};
 };
 
 /**
@@ -197,7 +206,7 @@ export const getMonthExchangeRates = async (
 	date: Date,
 	signal?: AbortSignal,
 	currencies = bnbSupportedCurrencies,
-): Promise<BnbExchangeRate[]> => {
+): Promise<{ rates: BnbExchangeRate[]; error: string | false }> => {
 	const [y, m] = [
 		String(date.getFullYear()),
 		String(date.getMonth() + 1).padStart(2, "0"),

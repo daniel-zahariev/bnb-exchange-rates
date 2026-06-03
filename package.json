@@ -1,6 +1,6 @@
 {
   "name": "@bg-apis/bnb-exchange-rates",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Fetch exchange rates from the Bulgarian National Bank (BNB) and parse them into a structured format.",
   "keywords": [
     "BNB",
